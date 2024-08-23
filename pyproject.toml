@@ -4,7 +4,6 @@ version = "1.0.0"
 description = ""
 authors = ["Juan José Méndez Torrero <juanjo96mt@gmail.com>"]
 readme = "README.md"
-changelog = "CHANGELOG.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
