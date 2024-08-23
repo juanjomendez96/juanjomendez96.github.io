@@ -18,32 +18,28 @@ build-backend = "poetry.core.masonry.api"
 [tool.git-cliff.changelog]
 header = "All notable changes to this project will be documented in this file."
 body = """
-{% if version -%}
+{% if version %}\
     ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
-{% else -%}
-    ## [Unreleased]
-{% endif -%}
+{% else %}\
+    ## [unreleased]
+{% endif %}\
+{% if previous %}\
+    {% if previous.commit_id and commit_id %}
+        [{{ previous.commit_id | truncate(length=7, end="") }}]({{ previous.commit_id }})...\
+            [{{ commit_id | truncate(length=7, end="") }}]({{ commit_id }})
+    {% endif %}\
+{% endif %}\
 {% for group, commits in commits | group_by(attribute="group") %}
     ### {{ group | upper_first }}
     {% for commit in commits %}
-        - {{ commit.message | upper_first }}\
+        - {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ commit.id }}))\
+          {% for footer in commit.footers -%}
+            , {{ footer.token }}{{ footer.separator }}{{ footer.value }}\
+          {% endfor %}\
     {% endfor %}
 {% endfor %}\n
 """
-footer = """
-{% for release in releases -%}
-    {% if release.version -%}
-        {% if release.previous.version -%}
-            [{{ release.version | trim_start_matches(pat="v") }}]: \
-                https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}\
-                    /compare/{{ release.previous.version }}..{{ release.version }}
-        {% endif -%}
-    {% else -%}
-        [unreleased]: https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}\
-            /compare/{{ release.previous.version }}..HEAD
-    {% endif -%}
-{% endfor %}
-"""
+footer = """"""
 trim = true
 # see [changelog] section for more keys
 

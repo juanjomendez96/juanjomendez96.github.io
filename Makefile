@@ -1,2 +1,2 @@
 changelog:
-	git cliff -o CHANGELOG.md
+	git-cliff -o CHANGELOG.md
