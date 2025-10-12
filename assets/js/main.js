@@ -108,6 +108,16 @@ if (toggle && nav) {
   );
 }
 
+document.addEventListener("click", (event) => {
+  const backToTop = event.target instanceof Element ? event.target.closest(".back-to-top") : null;
+  if (!backToTop) {
+    return;
+  }
+
+  event.preventDefault();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
 initAnimatedElements(document);
 updateYear();
 loadPartials();

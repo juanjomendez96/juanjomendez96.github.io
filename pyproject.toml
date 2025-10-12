@@ -3,11 +3,8 @@ name = "juanjomendez96-github-io"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.9"
-dependencies = [
-    "commitizen>=4.9.1",
-    "pre-commit>=4.3.0",
-]
+requires-python = ">=3.11"
+dependencies = ["commitizen>=4.9.1", "pre-commit>=4.3.0"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
