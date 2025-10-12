@@ -216,6 +216,12 @@ a {
   padding: 6rem 0 5rem;
 }
 
+.hero,
+.section,
+.site-footer {
+  scroll-margin-top: 7rem;
+}
+
 .hero__content {
   grid-column: 1 / span 7;
   display: flex;
@@ -232,6 +238,7 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
   backdrop-filter: var(--blur);
+  isolation: isolate;
 }
 
 .hero__visual::after {
@@ -244,12 +251,14 @@ a {
     radial-gradient(circle at 45% 70%, rgba(216, 58, 58, 0.2), transparent 60%);
   mix-blend-mode: screen;
   pointer-events: none;
+  border-radius: inherit;
 }
 
 .flow-field {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  border-radius: inherit;
 }
 
 .stream {
@@ -515,6 +524,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+  margin: 3rem 0;
 }
 
 .section--accent {
@@ -904,6 +914,12 @@ a {
     gap: 1rem;
   }
 
+  .hero,
+  .section,
+  .site-footer {
+    scroll-margin-top: 6rem;
+  }
+
   .nav-toggle {
     display: inline-flex;
   }
@@ -953,13 +969,13 @@ a {
 }
 
 @media (max-width: 560px) {
-  main {
-    padding: 0 1rem 5rem;
+  .site-main {
+    padding: 4.5rem 1.75rem 5rem;
   }
 
   .site-header {
-    width: calc(100% - 1rem);
-    padding: 0.75rem 1rem;
+    width: calc(100% - 1.5rem);
+    padding: 0.75rem 1.15rem;
   }
 
   .brand__mark {
@@ -969,14 +985,42 @@ a {
   }
 
   .hero {
-    padding: 5rem 0 3.5rem;
+    padding: 3.75rem 0 3.5rem;
+    gap: 3rem;
+  }
+
+  .hero__visual {
+    margin-top: 0.75rem;
+  }
+
+  .hero__content {
+    gap: 1.75rem;
   }
 
   .section {
     padding: 3.5rem 0;
+    gap: 3rem;
+    margin: 2.5rem 0;
+  }
+
+  .section__label {
+    margin-left: 0.15rem;
+  }
+
+  .section--accent {
+    padding: 3.5rem 1.75rem;
+  }
+
+  .card-grid,
+  .featured-grid,
+  .highlight-list,
+  .language-cards,
+  .timeline,
+  .toolbox {
+    gap: 1.75rem;
   }
 
   .highlight-list li {
-    padding: 1.1rem 1.25rem;
+    padding: 1.2rem 1.35rem;
   }
 }
