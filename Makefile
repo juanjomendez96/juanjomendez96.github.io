@@ -4,6 +4,9 @@ PORT ?= 4000
 
 .PHONY: help serve deploy
 
+install:
+	rm -rf uv.lock && uv sync && source .venv/bin/activate && pre-commit install
+
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-12s %s\n", $$1, $$2}'
 
