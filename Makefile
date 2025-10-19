@@ -2,7 +2,7 @@
 SHELL := /bin/sh
 PORT ?= 4000
 
-.PHONY: help serve deploy
+.PHONY: help serve deploy release
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-12s %s\n", $$1, $$2}'
@@ -28,3 +28,8 @@ deploy: ## Push master branch to trigger GitHub Pages deployment
 	fi
 	@echo "✅ Pushing master to origin to trigger GitHub Pages deployment..."
 	@git push origin master
+
+release: ## Publish a semantic release (requires GH_TOKEN or GITHUB_TOKEN)
+	@[ -n "$${GH_TOKEN:-$${GITHUB_TOKEN:-}}" ] || { echo "🚫 Set GH_TOKEN or GITHUB_TOKEN with repo write access before releasing."; exit 1; }
+	@echo "Publishing semantic release..."
+	@uv run semantic-release publish
