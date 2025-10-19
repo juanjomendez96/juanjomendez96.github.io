@@ -7,7 +7,6 @@ requires-python = ">=3.11"
 dependencies = [
     "commitizen>=4.9.1",
     "pre-commit>=4.3.0",
-    "python-semantic-release>=9.9.0",
 ]
 
 [tool.commitizen]
@@ -17,14 +16,3 @@ version_scheme = "pep440"
 version_provider = "uv"
 update_changelog_on_bump = true
 major_version_zero = true
-
-[tool.semantic_release]
-branch = "master"
-version_toml = ["pyproject.toml:project.version"]
-changelog_file = "CHANGELOG.md"
-commit_parser = "conventional"
-major_on_zero = true
-upload_to_pypi = false
-build_command = ""
-tag_format = "v{version}"
-initial_version = "0.1.0"
