@@ -1,7 +1,8 @@
 # Changelog
 
-Generated automatically on 2025-10-19 13:51 UTC from master branch commit history.
+Generated automatically on 2025-10-19 13:58 UTC from master branch commit history.
 
+- 2025-10-19 bf59d7b fix: remove semantic release and added script to update changelog when pushed to master
 - 2025-10-19 9024ca2 fix: merge workflows and fix semantic release
 - 2025-10-19 0b7ea13 fix: fix semantic release in release.yml
 - 2025-10-19 345a0d2 Merge pull request #3 from juanjomendez96/feature/fix-semantic-release
