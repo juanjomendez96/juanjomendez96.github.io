@@ -44,26 +44,3 @@ jobs:
       - name: Skip changelog update
         if: github.event_name != 'push' || github.ref != 'refs/heads/master'
         run: echo "Changelog update skipped for this event."
-
-  build:
-    runs-on: ubuntu-latest
-    needs: changelog
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
