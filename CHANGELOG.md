@@ -1,7 +1,9 @@
 # Changelog
 
-Generated automatically on 2025-10-19 13:58 UTC from master branch commit history.
+Generated automatically on 2025-10-19 14:05 UTC from master branch commit history.
 
+- 2025-10-19 f591f32 fix: remove build and deploy as it is managed automatically by github pages
+- 2025-10-19 16fcd37 docs(changelog): auto-update [skip ci]
 - 2025-10-19 bf59d7b fix: remove semantic release and added script to update changelog when pushed to master
 - 2025-10-19 9024ca2 fix: merge workflows and fix semantic release
 - 2025-10-19 0b7ea13 fix: fix semantic release in release.yml
