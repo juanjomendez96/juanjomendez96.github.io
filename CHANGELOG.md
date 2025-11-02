@@ -1,7 +1,9 @@
 # Changelog
 
-Generated automatically on 2025-11-02 11:28 UTC from master branch commit history.
+Generated automatically on 2025-11-02 11:47 UTC from master branch commit history.
 
+- 2025-11-02 c6add50 fix: fix footer links and add github
+- 2025-11-02 d9780fa docs(changelog): auto-update [skip ci]
 - 2025-11-02 847fff3 Merge pull request #4 from juanjomendez96/feature/adr-records-implementation
 - 2025-11-02 1fc0041 feature: Add ADR system
 - 2025-10-19 60cedc6 docs(changelog): auto-update [skip ci]
