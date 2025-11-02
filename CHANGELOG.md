@@ -1,7 +1,10 @@
 # Changelog
 
-Generated automatically on 2025-10-19 14:05 UTC from master branch commit history.
+Generated automatically on 2025-11-02 11:28 UTC from master branch commit history.
 
+- 2025-11-02 847fff3 Merge pull request #4 from juanjomendez96/feature/adr-records-implementation
+- 2025-11-02 1fc0041 feature: Add ADR system
+- 2025-10-19 60cedc6 docs(changelog): auto-update [skip ci]
 - 2025-10-19 f591f32 fix: remove build and deploy as it is managed automatically by github pages
 - 2025-10-19 16fcd37 docs(changelog): auto-update [skip ci]
 - 2025-10-19 bf59d7b fix: remove semantic release and added script to update changelog when pushed to master
