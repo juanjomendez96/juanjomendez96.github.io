@@ -30,6 +30,11 @@ make deploy
 ```
 Deploying pushes the `master` branch to `origin`, which triggers the GitHub Pages pipeline. Deployment only continues if you are on `master` and working tree changes are committed or stashed.
 
+## Architecture Decision Records
+- ADRs live under `docs/adr/` and follow the `NNNN-title.md` naming convention.
+- Start new records from `docs/adr/0000-template.md`, copy it to the next sequential number, then fill in the details.
+- Keep ADRs in the same pull request as the work when possible so the decision and implementation stay linked.
+
 ## Contributing
 1. Fork the repository and create a feature branch.
 2. Run `make install` to set up the local environment and install pre-commit hooks.
