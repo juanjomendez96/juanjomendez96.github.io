@@ -793,20 +793,34 @@ a {
 
 .footer__contact {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 0.75rem;
+  align-items: center;
 }
 
 .contact-link {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--accent-strong);
-  transition: color var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  background: rgba(174, 255, 154, 0.12);
+  border: 1px solid rgba(174, 154, 255, 0.35);
+  transition: transform var(--transition), background var(--transition), border-color var(--transition);
+}
+
+.contact-link img {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .contact-link:hover,
 .contact-link:focus-visible {
-  color: var(--text-primary);
+  transform: translateY(-2px);
+  background: rgba(174, 154, 255, 0.22);
+  border-color: rgba(174, 154, 255, 0.6);
 }
 
 .footer__meta {
