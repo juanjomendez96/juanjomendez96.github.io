@@ -1,0 +1,22 @@
+{
+  "document": {
+    "title": "Juan José Méndez Torrero | Data Engineer Portfolio",
+    "description": "Portfolio for Juan José Méndez Torrero, a data engineer building resilient pipelines, analytics, and ML products."
+  },
+  "brand": {
+    "role": "Data Engineer · AI enthusiast"
+  },
+  "nav": {
+    "label": "Primary navigation",
+    "toggle": "Toggle navigation",
+    "snapshot": "Snapshot",
+    "services": "What I Do",
+    "featured": "Experience",
+    "toolbox": "Toolbox",
+    "education": "Education",
+    "contact": "Let's Connect"
+  },
+  "locale": {
+    "switcherLabel": "Change language"
+  }
+}

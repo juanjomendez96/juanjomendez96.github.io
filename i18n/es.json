@@ -1,0 +1,22 @@
+{
+  "document": {
+    "title": "Juan José Méndez Torrero | Portafolio de ingeniería de datos",
+    "description": "Portafolio de Juan José Méndez Torrero, ingeniero de datos que construye pipelines resilientes, analítica e iniciativas de ML."
+  },
+  "brand": {
+    "role": "Ingeniero de datos · Entusiasta de IA"
+  },
+  "nav": {
+    "label": "Navegación principal",
+    "toggle": "Abrir o cerrar navegación",
+    "snapshot": "Resumen",
+    "services": "Qué hago",
+    "featured": "Experiencia",
+    "toolbox": "Herramientas",
+    "education": "Formación",
+    "contact": "Conectemos"
+  },
+  "locale": {
+    "switcherLabel": "Cambiar idioma"
+  }
+}

@@ -23,20 +23,24 @@
       </a>
       <div class="brand__meta">
         <span class="brand__name">Juan José Méndez Torrero</span>
-        <span class="brand__role">Data Engineer · ML Advocate</span>
+        <span class="brand__role" data-i18n-key="brand.role">Data Engineer · ML Advocate</span>
       </div>
     </div>
     <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
       <span class="nav-toggle__bar"></span>
-      <span class="sr-only">Toggle navigation</span>
+      <span class="sr-only" data-i18n-key="nav.toggle">Toggle navigation</span>
     </button>
-    <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
-      <a href="#snapshot">Snapshot</a>
-      <a href="#services">What I Do</a>
-      <a href="#featured">Featured Work</a>
-      <a href="#toolbox">Toolbox</a>
-      <a href="#education">Education</a>
-      <a href="#contact">Let's Connect</a>
+    <nav id="site-nav" class="site-nav" aria-label="Primary navigation" data-i18n-attr="aria-label:nav.label">
+      <a href="#snapshot" data-i18n-key="nav.snapshot">Snapshot</a>
+      <a href="#services" data-i18n-key="nav.services">What I Do</a>
+      <a href="#featured" data-i18n-key="nav.featured">Featured Work</a>
+      <a href="#toolbox" data-i18n-key="nav.toolbox">Toolbox</a>
+      <a href="#education" data-i18n-key="nav.education">Education</a>
+      <a href="#contact" data-i18n-key="nav.contact">Let's Connect</a>
+      <div class="locale-switch" role="group" aria-label="Change language" data-i18n-attr="aria-label:locale.switcherLabel">
+        <button type="button" class="locale-switch__btn" data-locale="en" aria-pressed="false">EN</button>
+        <button type="button" class="locale-switch__btn" data-locale="es" aria-pressed="false">ES</button>
+      </div>
     </nav>
   </header>
 
@@ -52,7 +56,7 @@
 
   <div data-partial="footer"></div>
 
-  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/main.js?v=20240511" defer></script>
 </body>
 
 </html>

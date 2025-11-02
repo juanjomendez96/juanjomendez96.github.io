@@ -35,6 +35,12 @@ Deploying pushes the `master` branch to `origin`, which triggers the GitHub Page
 - Start new records from `docs/adr/0000-template.md`, copy it to the next sequential number, then fill in the details.
 - Keep ADRs in the same pull request as the work when possible so the decision and implementation stay linked.
 
+## Localization
+- Switch between English and Spanish from the header toggle; the choice persists in `localStorage` and can be forced with `?lang=en` or `?lang=es`.
+- Locale-specific partials live under `partials/<locale>/` (for example `partials/es/`) and mirror the base HTML structure.
+- Shared strings (document title, meta description, navigation, etc.) are in `i18n/<locale>.json`. Add new keys in both the English file and the target locale.
+- When adding another language, copy the English partials, translate them, create a JSON dictionary, and register the locale code in `assets/js/main.js`.
+
 ## Contributing
 1. Fork the repository and create a feature branch.
 2. Run `make install` to set up the local environment and install pre-commit hooks.
