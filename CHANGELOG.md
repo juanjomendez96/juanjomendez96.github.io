@@ -1,7 +1,9 @@
 # Changelog
 
-Generated automatically on 2025-11-02 12:11 UTC from master branch commit history.
+Generated automatically on 2025-12-18 17:23 UTC from master branch commit history.
 
+- 2025-12-18 7e47d74 fix: update snapshot of aws with ci/cd
+- 2025-11-02 ac38a35 docs(changelog): auto-update [skip ci]
 - 2025-11-02 a425db7 feat: add spanish lang
 - 2025-11-02 2db8121 docs(changelog): auto-update [skip ci]
 - 2025-11-02 c6add50 fix: fix footer links and add github
