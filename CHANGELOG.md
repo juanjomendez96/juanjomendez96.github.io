@@ -1,7 +1,10 @@
 # Changelog
 
-Generated automatically on 2025-12-18 17:23 UTC from master branch commit history.
+Generated automatically on 2026-05-10 11:05 UTC from master branch commit history.
 
+- 2026-05-10 3e096c5 Merge pull request #5 from juanjomendez96/feature/add-certification-and-projects
+- 2026-05-10 c18b868 feat: improve descriptions, add new certifications and add new projects
+- 2025-12-18 da4ffbd docs(changelog): auto-update [skip ci]
 - 2025-12-18 7e47d74 fix: update snapshot of aws with ci/cd
 - 2025-11-02 ac38a35 docs(changelog): auto-update [skip ci]
 - 2025-11-02 a425db7 feat: add spanish lang
