@@ -132,6 +132,7 @@ a {
 .brand__role {
   font-size: 0.85rem;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .site-nav {
@@ -144,6 +145,7 @@ a {
 .site-nav a {
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
+  white-space: nowrap;
   transition: background-color var(--transition), color var(--transition);
 }
 
@@ -256,7 +258,7 @@ a {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 2rem;
-  padding: 6rem 0 5rem;
+  padding: 3rem 0 5rem;
 }
 
 .hero,
@@ -709,6 +711,44 @@ a {
 
 .feature-card li + li {
   margin-top: 0.4rem;
+}
+
+.feature-card__links {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+.feature-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  transition: color var(--transition), border-color var(--transition), background-color var(--transition);
+}
+
+.feature-card__link:hover,
+.feature-card__link:focus-visible {
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.feature-card__link img {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.6;
+}
+
+.feature-card__link:hover img {
+  opacity: 0.9;
 }
 
 /* Toolbox */
