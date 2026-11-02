@@ -2,7 +2,7 @@
 SHELL := /bin/sh
 PORT ?= 4000
 
-.PHONY: help serve deploy release-dry-run
+.PHONY: help serve test deploy release-dry-run
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-12s %s\n", $$1, $$2}'
@@ -15,6 +15,9 @@ install: ## Install development environment
 serve: ## Serve the site locally for preview
 	@echo "Starting local server on http://localhost:$(PORT)"
 	@python3 -m http.server $(PORT)
+
+test: ## Run the static checks (locales, theme tokens, release config)
+	@PYTHONDONTWRITEBYTECODE=1 uv run --no-project --python 3.12 python -m unittest discover -s tests -v
 
 deploy: ## Push master branch to trigger GitHub Pages deployment
 	@if [ "$$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then \

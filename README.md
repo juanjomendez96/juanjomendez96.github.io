@@ -64,5 +64,5 @@ Commit messages are checked locally by the commitizen pre-commit hook (installed
 1. Fork the repository and create a feature branch.
 2. Run `make install` to set up the local environment and install pre-commit hooks.
 3. Develop your changes and preview them locally with `make serve`.
-4. Ensure formatting and tests (if any) pass before opening a pull request.
+4. Run `make test` and make sure it passes before opening a pull request. The checks (standard-library `unittest`, in `tests/`) keep the English and Spanish content in sync, make sure both themes define every color token, and validate the release configuration.
 5. Describe the motivation and approach clearly when you submit the PR.
