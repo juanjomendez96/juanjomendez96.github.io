@@ -1,0 +1,82 @@
+name: Release
+
+# On every push to master, commitizen reads the conventional commits since the
+# last tag and decides the next version:
+#   feat -> minor, fix -> patch, "!" or BREAKING CHANGE -> major.
+# Commits that are only docs/chore/ci/etc. do not create a release.
+# GitHub Pages keeps publishing straight from the branch, so no deploy step here.
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  COMMITIZEN_VERSION: "4.19.3"
+
+jobs:
+  release:
+    # The bump commit is created by this job; never react to it.
+    if: ${{ !startsWith(github.event.head_commit.message, 'bump:') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Full history and tags are needed to pick the next version.
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.3
+
+      - name: Run tests
+        run: uv run --no-project --python 3.12 python -m unittest discover -s tests -v
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version, update changelog and tag
+        id: bump
+        run: |
+          set +e
+          uvx --from "commitizen==${COMMITIZEN_VERSION}" cz bump --yes
+          status=$?
+          set -e
+
+          # 3  = nothing new since the last tag
+          # 21 = new commits, but none that warrants a release (docs, chore, ci...)
+          if [ "$status" -eq 3 ] || [ "$status" -eq 21 ]; then
+            echo "No release-worthy commits since the last tag; skipping."
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$status" -ne 0 ]; then
+            exit "$status"
+          fi
+
+          version="$(uvx --from "commitizen==${COMMITIZEN_VERSION}" cz version --project)"
+          echo "released=true" >> "$GITHUB_OUTPUT"
+          echo "tag=v${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Push release commit and tag
+        if: steps.bump.outputs.released == 'true'
+        run: git push origin HEAD:master --follow-tags
+
+      - name: Create GitHub release
+        if: steps.bump.outputs.released == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.bump.outputs.tag }}
+        run: |
+          uvx --from "commitizen==${COMMITIZEN_VERSION}" cz changelog "$TAG" --dry-run > release-notes.md
+          gh release create "$TAG" --verify-tag --title "$TAG" --notes-file release-notes.md

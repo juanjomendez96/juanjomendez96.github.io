@@ -18,5 +18,8 @@
   },
   "locale": {
     "switcherLabel": "Cambiar idioma"
+  },
+  "theme": {
+    "toggle": "Cambiar entre modo claro y oscuro"
   }
 }

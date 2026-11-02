@@ -1,7 +1,7 @@
-<section class="hero" data-animate="fade-up">
+<section class="hero">
   <div class="hero__content">
     <p class="eyebrow">Ingeniería de datos · Databricks · Flujos potenciados por IA</p>
-    <h1>Plataformas de datos resilientes que aceleran la investigación.</h1>
+    <h1 data-split>Plataformas de datos resilientes que aceleran la investigación.</h1>
     <p class="lead">
       Soy Juan José, un ingeniero de datos que conecta la rigurosidad de la ingeniería de datos tradicional con las
       herramientas modernas de IA. Diseño flujos de trabajo en Python sobre Databricks para entornos clínicos
@@ -14,13 +14,49 @@
     </div>
   </div>
   <div class="hero__visual" aria-hidden="true">
-    <div class="flow-field">
-      <div class="stream stream--one"></div>
-      <div class="stream stream--two"></div>
-      <div class="stream stream--three"></div>
-      <div class="packet packet--one"></div>
-      <div class="packet packet--two"></div>
-      <div class="packet packet--three"></div>
+    <div class="run">
+      <div class="run__bar">
+        <span class="run__title">Ejecución del pipeline</span>
+        <span class="run__status">
+          <span class="run__status-a">En ejecución</span>
+          <span class="run__status-b">Completada</span>
+        </span>
+      </div>
+      <ol class="run__steps">
+        <li class="run__step" style="--s: 0">
+          <span class="run__icon">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </span>
+          <span class="run__name">Ingesta</span>
+          <span class="run__track"><span class="run__fill"></span></span>
+        </li>
+        <li class="run__step" style="--s: 1">
+          <span class="run__icon">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </span>
+          <span class="run__name">Validación</span>
+          <span class="run__track"><span class="run__fill"></span></span>
+        </li>
+        <li class="run__step" style="--s: 2">
+          <span class="run__icon">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </span>
+          <span class="run__name">Transformación</span>
+          <span class="run__track"><span class="run__fill"></span></span>
+        </li>
+        <li class="run__step" style="--s: 3">
+          <span class="run__icon">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </span>
+          <span class="run__name">Publicación</span>
+          <span class="run__track"><span class="run__fill"></span></span>
+        </li>
+      </ol>
+      <div class="run__stack">
+        <span class="chip">Python</span>
+        <span class="chip">Databricks</span>
+        <span class="chip">Delta Lake</span>
+      </div>
     </div>
   </div>
   <div class="hero__scroll-hint">
