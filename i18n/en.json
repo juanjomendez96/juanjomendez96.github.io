@@ -18,5 +18,8 @@
   },
   "locale": {
     "switcherLabel": "Change language"
+  },
+  "theme": {
+    "toggle": "Toggle light or dark mode"
   }
 }

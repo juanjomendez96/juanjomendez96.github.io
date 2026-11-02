@@ -8,8 +8,14 @@ const observedElements = new WeakSet();
 const SUPPORTED_LOCALES = ["en", "es"];
 const DEFAULT_LOCALE = "en";
 const LOCALE_STORAGE_KEY = "preferred-locale";
+const THEME_STORAGE_KEY = "preferred-theme";
 let currentLocale = DEFAULT_LOCALE;
 let localeStrings = {};
+
+const rootElement = document.documentElement;
+const siteHeader = document.querySelector(".site-header");
+const pipeline = document.querySelector(".pipeline");
+const systemLightQuery = window.matchMedia("(prefers-color-scheme: light)");
 
 const safeStorage = {
   get(key) {
@@ -24,7 +30,7 @@ const safeStorage = {
     try {
       window.localStorage.setItem(key, value);
     } catch (error) {
-      console.warn("Unable to persist locale preference:", error);
+      console.warn("Unable to persist preference:", error);
     }
   },
 };
@@ -152,7 +158,9 @@ const initAnimatedElements = (source = document) => {
           }
         });
       },
-      { threshold: 0.2 }
+      // Reveal once the top of an element is 12% inside the viewport. A ratio
+      // threshold would never fire for sections taller than the screen.
+      { threshold: 0, rootMargin: "0px 0px -12% 0px" }
     );
   }
 
@@ -162,6 +170,168 @@ const initAnimatedElements = (source = document) => {
       observedElements.add(el);
     }
   });
+};
+
+// Children of [data-stagger] reveal one after another; --i drives the delay.
+const applyStaggerIndices = (scope) => {
+  scope.querySelectorAll("[data-stagger]").forEach((parent) => {
+    Array.from(parent.children).forEach((child, index) => {
+      child.style.setProperty("--i", index);
+    });
+  });
+};
+
+/* Theme ------------------------------------------------------------------ */
+
+const getTheme = () => (rootElement.getAttribute("data-theme") === "light" ? "light" : "dark");
+
+const applyTheme = (theme) => {
+  rootElement.setAttribute("data-theme", theme);
+  document.querySelectorAll(".theme-toggle").forEach((button) => {
+    button.setAttribute("aria-pressed", String(theme === "light"));
+  });
+};
+
+const initThemeToggle = () => {
+  const button = document.querySelector(".theme-toggle");
+  if (!button) {
+    return;
+  }
+
+  // The inline script in <head> already resolved the theme; sync the button.
+  applyTheme(getTheme());
+
+  button.addEventListener("click", () => {
+    const next = getTheme() === "light" ? "dark" : "light";
+
+    if (!prefersReducedMotion.matches) {
+      rootElement.classList.add("theme-transition");
+      window.setTimeout(() => rootElement.classList.remove("theme-transition"), 400);
+    }
+
+    applyTheme(next);
+    safeStorage.set(THEME_STORAGE_KEY, next);
+  });
+
+  // Follow the OS only until the visitor makes an explicit choice.
+  systemLightQuery.addEventListener("change", (event) => {
+    if (!safeStorage.get(THEME_STORAGE_KEY)) {
+      applyTheme(event.matches ? "light" : "dark");
+    }
+  });
+};
+
+/* Pipeline, header and scroll-spy ------------------------------------------ */
+
+let nodes = [];
+let nodeMarks = [];
+let spyTargets = [];
+let pipelineTop = 0;
+let pipelineHeight = 1;
+let scrollFrame = 0;
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+// Document-space Y of the centre of a node's dot (its ::before pseudo-element).
+const getDotCenter = (node) => {
+  const dot = window.getComputedStyle(node, "::before");
+  const top = parseFloat(dot.top) || 0;
+  const size = parseFloat(dot.height) || 0;
+  return node.getBoundingClientRect().top + window.scrollY + top + size / 2;
+};
+
+const layoutPipeline = () => {
+  if (!pipeline || nodes.length < 2) {
+    return;
+  }
+
+  nodeMarks = nodes.map(getDotCenter);
+  pipelineTop = nodeMarks[0];
+  pipelineHeight = Math.max(1, nodeMarks[nodeMarks.length - 1] - pipelineTop);
+
+  const pageTop = pipeline.offsetParent
+    ? pipeline.offsetParent.getBoundingClientRect().top + window.scrollY
+    : 0;
+  pipeline.style.top = `${pipelineTop - pageTop}px`;
+  pipeline.style.height = `${pipelineHeight}px`;
+};
+
+const updateScrollEffects = () => {
+  scrollFrame = 0;
+
+  const scrollY = window.scrollY;
+  const reduced = prefersReducedMotion.matches;
+  const marker = scrollY + window.innerHeight * 0.55;
+
+  if (siteHeader) {
+    siteHeader.classList.toggle("is-scrolled", scrollY > 24);
+  }
+
+  if (pipeline) {
+    const progress = reduced ? 1 : clamp((marker - pipelineTop) / pipelineHeight, 0, 1);
+    pipeline.style.setProperty("--progress", progress.toFixed(4));
+  }
+
+  nodes.forEach((node, index) => {
+    node.classList.toggle("is-reached", reduced || marker >= (nodeMarks[index] ?? Infinity));
+  });
+
+  const atBottom = scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+  let current = null;
+  spyTargets.forEach((item) => {
+    if (item.target.getBoundingClientRect().top <= window.innerHeight * 0.35) {
+      current = item;
+    }
+  });
+  if (atBottom && spyTargets.length) {
+    current = spyTargets[spyTargets.length - 1];
+  }
+  spyTargets.forEach((item) => {
+    if (item === current) {
+      item.link.setAttribute("aria-current", "true");
+    } else {
+      item.link.removeAttribute("aria-current");
+    }
+  });
+};
+
+const requestScrollUpdate = () => {
+  if (!scrollFrame) {
+    scrollFrame = window.requestAnimationFrame(updateScrollEffects);
+  }
+};
+
+// Re-measure after partials (re)load, fonts settle, or the layout resizes.
+const refreshScrollEffects = () => {
+  nodes = Array.from(document.querySelectorAll(".hero, .section, .site-footer"));
+  spyTargets = Array.from(navLinks)
+    .filter((link) => link.hash)
+    .map((link) => ({ link, target: document.querySelector(link.hash) }))
+    .filter((item) => item.target);
+  layoutPipeline();
+  updateScrollEffects();
+};
+
+const initScrollEffects = () => {
+  window.addEventListener("scroll", requestScrollUpdate, { passive: true });
+  window.addEventListener("resize", () => {
+    layoutPipeline();
+    requestScrollUpdate();
+  });
+
+  const page = document.querySelector(".page");
+  if (page && "ResizeObserver" in window) {
+    new ResizeObserver(() => {
+      layoutPipeline();
+      requestScrollUpdate();
+    }).observe(page);
+  }
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(refreshScrollEffects);
+  }
+
+  prefersReducedMotion.addEventListener("change", requestScrollUpdate);
 };
 
 const getInitialLocale = () => {
@@ -244,6 +414,7 @@ const loadPartials = async () => {
       try {
         const html = await fetchPartial(name, currentLocale);
         container.innerHTML = html.trim();
+        applyStaggerIndices(container);
         const animatedTargets = Array.from(container.querySelectorAll("[data-animate]"));
 
         initAnimatedElements(animatedTargets);
@@ -254,6 +425,7 @@ const loadPartials = async () => {
   );
 
   updateYear();
+  refreshScrollEffects();
 };
 
 const setLocale = async (locale) => {
@@ -323,3 +495,5 @@ loadPartials().catch((error) => {
   console.error("Failed to load partials:", error);
 });
 initLocaleSwitcher();
+initThemeToggle();
+initScrollEffects();
