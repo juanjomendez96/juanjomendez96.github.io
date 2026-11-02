@@ -1,3 +1,5 @@
+default_install_hook_types: [pre-commit, commit-msg]
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -6,10 +8,8 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
-  - repo: local
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.19.3
     hooks:
-      - id: conventional-commit-message
-        name: Conventional commit message
-        entry: python scripts/commit_message_lint.py
-        language: system
+      - id: commitizen
         stages: [commit-msg]

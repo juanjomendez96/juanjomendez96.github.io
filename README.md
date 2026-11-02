@@ -30,6 +30,25 @@ make deploy
 ```
 Deploying pushes the `master` branch to `origin`, which triggers the GitHub Pages pipeline. Deployment only continues if you are on `master` and working tree changes are committed or stashed.
 
+## Releases and Versioning
+Releases are automatic and follow [Semantic Versioning](https://semver.org). Every push to `master` runs `.github/workflows/release.yml`, which uses [commitizen](https://commitizen-tools.github.io/commitizen/) to read the [Conventional Commits](https://www.conventionalcommits.org) since the last tag and decide the next version:
+
+| Commit type | Version bump | Example |
+|---|---|---|
+| `fix:` | patch (`1.1.0` → `1.1.1`) | `fix(nav): keep menu open on resize` |
+| `feat:` | minor (`1.1.0` → `1.2.0`) | `feat(theme): add high-contrast mode` |
+| `feat!:` or a `BREAKING CHANGE:` footer | major (`1.1.0` → `2.0.0`) | `feat!: drop the ?lang= parameter` |
+| `docs:`, `chore:`, `ci:`, `style:`, `test:`, `refactor:` | no release | |
+
+When a release is due the workflow bumps the version in `pyproject.toml`, updates `CHANGELOG.md`, pushes a `bump:` commit and an annotated `vX.Y.Z` tag, and publishes a GitHub Release with the notes for that version. Preview what the next release would be with `make release-dry-run`.
+
+Commit messages are checked locally by the commitizen pre-commit hook (installed by `make install`) and must follow the Conventional Commits format.
+
+## Theming
+- The page follows the visitor's OS light/dark preference until they use the sun/moon button in the header; that choice is stored in `localStorage` (`preferred-theme`).
+- All colors are CSS variables defined at the top of `assets/css/main.css`: dark values in `:root`, light values in `:root[data-theme="light"]`. Use the variables instead of hardcoded colors so both themes keep working.
+- A small inline script in `index.html` sets `data-theme` before first paint to avoid a flash of the wrong theme.
+
 ## Architecture Decision Records
 - ADRs live under `docs/adr/` and follow the `NNNN-title.md` naming convention.
 - Start new records from `docs/adr/0000-template.md`, copy it to the next sequential number, then fill in the details.

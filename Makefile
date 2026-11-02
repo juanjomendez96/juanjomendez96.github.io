@@ -2,7 +2,7 @@
 SHELL := /bin/sh
 PORT ?= 4000
 
-.PHONY: help serve deploy
+.PHONY: help serve deploy release-dry-run
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-12s %s\n", $$1, $$2}'
@@ -28,3 +28,6 @@ deploy: ## Push master branch to trigger GitHub Pages deployment
 	fi
 	@echo "✅ Pushing master to origin to trigger GitHub Pages deployment..."
 	@git push origin master
+
+release-dry-run: ## Preview the next version and changelog without changing anything
+	@uvx --from "commitizen==4.19.3" cz bump --dry-run --yes
