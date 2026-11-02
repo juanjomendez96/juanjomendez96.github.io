@@ -2,7 +2,7 @@
 SHELL := /bin/sh
 PORT ?= 4000
 
-.PHONY: help serve test deploy release-dry-run
+.PHONY: help serve test deploy release-dry-run skills-sync
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-12s %s\n", $$1, $$2}'
@@ -34,3 +34,11 @@ deploy: ## Push master branch to trigger GitHub Pages deployment
 
 release-dry-run: ## Preview the next version and changelog without changing anything
 	@uvx --from "commitizen==4.19.3" cz bump --dry-run --yes
+
+# Select skills from the skills repository and install them into .agents/skills
+# (visible to Claude Code via the .claude/skills symlink).
+#   make skills-sync                      interactive selection
+#   make skills-sync SKILLS=pr-description   or SKILLS=all (non-interactive)
+#   make skills-sync SKILLS_REPO=<url|path>  use a different source repo
+skills-sync:
+	@SKILLS="$(SKILLS)" SKILLS_REPO="$(SKILLS_REPO)" ./scripts/skills-sync.sh
