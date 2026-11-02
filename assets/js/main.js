@@ -2,8 +2,6 @@ const toggle = document.querySelector(".nav-toggle");
 const nav = document.querySelector(".site-nav");
 const navLinks = document.querySelectorAll(".site-nav a");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-let observer;
-const observedElements = new WeakSet();
 
 const SUPPORTED_LOCALES = ["en", "es"];
 const DEFAULT_LOCALE = "en";
@@ -126,59 +124,171 @@ const updateYear = (scope = document) => {
   }
 };
 
-const initAnimatedElements = (source = document) => {
-  let elements = [];
+/* Reveals ------------------------------------------------------------------
+   Every block animates on its own as it scrolls into view, so there is always
+   something happening as you go down the page. Elements that enter together are
+   staggered through --d (see the CSS "Motion" section). */
 
-  if (source instanceof Element || source instanceof Document || source instanceof DocumentFragment) {
-    elements = Array.from(source.querySelectorAll("[data-animate]"));
-    if (source instanceof Element && source.matches("[data-animate]")) {
-      elements.unshift(source);
-    }
-  } else if (source instanceof NodeList || Array.isArray(source)) {
-    elements = Array.from(source);
-  }
+const REVEAL_SELECTOR = [
+  ".hero__content > :not(h1)",
+  ".hero__visual",
+  ".section__label",
+  ".section__intro > :not(h2)",
+  "[data-stagger] > *",
+  ".footer__intro > :not(h2)",
+  ".footer__contact",
+  ".footer__meta",
+].join(", ");
 
-  if (!elements.length) {
-    return;
-  }
-
-  if (prefersReducedMotion.matches) {
-    elements.forEach((el) => el.classList.add("is-visible"));
-    return;
-  }
-
-  if (!observer) {
-    observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-            observedElements.delete(entry.target);
-          }
-        });
-      },
-      // Reveal once the top of an element is 12% inside the viewport. A ratio
-      // threshold would never fire for sections taller than the screen.
-      { threshold: 0, rootMargin: "0px 0px -12% 0px" }
-    );
-  }
-
-  elements.forEach((el) => {
-    if (!observedElements.has(el)) {
-      observer.observe(el);
-      observedElements.add(el);
-    }
-  });
+const handleReveals = (entries) => {
+  entries
+    .filter((entry) => entry.isIntersecting)
+    .map((entry) => entry.target)
+    .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1))
+    .forEach((element, index) => {
+      element.style.setProperty("--d", Math.min(index, 6));
+      element.classList.add("is-visible");
+      revealObserver.unobserve(element);
+    });
 };
 
-// Children of [data-stagger] reveal one after another; --i drives the delay.
-const applyStaggerIndices = (scope) => {
-  scope.querySelectorAll("[data-stagger]").forEach((parent) => {
-    Array.from(parent.children).forEach((child, index) => {
-      child.style.setProperty("--i", index);
-    });
+// Fire once the top of an element is 10% inside the viewport; a ratio threshold
+// would never trigger for blocks taller than the screen.
+const revealObserver =
+  "IntersectionObserver" in window
+    ? new IntersectionObserver(handleReveals, { threshold: 0, rootMargin: "0px 0px -10% 0px" })
+    : null;
+
+// Splits a heading into masked words so they can slide up one after another.
+const splitWords = (element) => {
+  if (element.dataset.splitDone) {
+    return;
+  }
+
+  const text = element.textContent.trim();
+  const words = text.split(/\s+/);
+  element.textContent = "";
+  element.setAttribute("aria-label", text);
+
+  words.forEach((word, index) => {
+    const outer = document.createElement("span");
+    outer.className = "w";
+    outer.setAttribute("aria-hidden", "true");
+    const inner = document.createElement("span");
+    inner.className = "w__i";
+    inner.style.setProperty("--w", index);
+    inner.textContent = word;
+    outer.append(inner);
+    element.append(outer);
+    if (index < words.length - 1) {
+      element.append(" ");
+    }
   });
+
+  element.dataset.splitDone = "true";
+  element.classList.add("split");
+};
+
+const initReveals = (scope) => {
+  scope.querySelectorAll("[data-split]").forEach(splitWords);
+
+  const blocks = Array.from(scope.querySelectorAll(REVEAL_SELECTOR));
+  blocks.forEach((element) => element.classList.add("reveal"));
+  const watched = [...blocks, ...scope.querySelectorAll(".split")];
+
+  if (prefersReducedMotion.matches || !revealObserver) {
+    watched.forEach((element) => element.classList.add("is-visible"));
+    return;
+  }
+
+  watched.forEach((element) => revealObserver.observe(element));
+};
+
+/* Gliding highlight ----------------------------------------------------------
+   A pill that slides between the items of a [data-highlight] container on hover
+   or keyboard focus. The nav pill also rests on the current section. */
+
+let highlights = [];
+
+const initHighlight = (container) => {
+  if (!container || container.querySelector(":scope > .hl")) {
+    return null;
+  }
+
+  const isNav = container.matches(".site-nav");
+  const highlight = document.createElement("span");
+  highlight.className = "hl hl--instant";
+  highlight.setAttribute("aria-hidden", "true");
+  container.prepend(highlight);
+
+  let hovered = null;
+
+  const itemFor = (target) => {
+    let element = target instanceof Element ? target : null;
+    while (element && element.parentElement !== container) {
+      element = element.parentElement;
+    }
+    if (!element || element === highlight || (isNav && element.tagName !== "A")) {
+      return null;
+    }
+    return element;
+  };
+
+  const resting = () => (isNav ? container.querySelector('a[aria-current="true"]') : null);
+
+  const place = (item) => {
+    if (!item) {
+      highlight.style.opacity = "0";
+      return;
+    }
+
+    // The first appearance jumps into position; later moves glide.
+    const wasHidden = highlight.style.opacity !== "1";
+    if (wasHidden) {
+      highlight.classList.add("hl--instant");
+    }
+    highlight.style.width = `${item.offsetWidth}px`;
+    highlight.style.height = `${item.offsetHeight}px`;
+    highlight.style.transform = `translate(${item.offsetLeft}px, ${item.offsetTop}px)`;
+    if (wasHidden) {
+      void highlight.offsetWidth;
+      highlight.classList.remove("hl--instant");
+    }
+    highlight.style.opacity = "1";
+  };
+
+  const sync = () => place(hovered || resting());
+
+  container.addEventListener("pointerover", (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+    hovered = itemFor(event.target);
+    sync();
+  });
+  container.addEventListener("pointerleave", () => {
+    hovered = null;
+    sync();
+  });
+  container.addEventListener("focusin", (event) => {
+    hovered = itemFor(event.target);
+    sync();
+  });
+  container.addEventListener("focusout", (event) => {
+    if (!container.contains(event.relatedTarget)) {
+      hovered = null;
+      sync();
+    }
+  });
+
+  const api = { container, sync };
+  highlights.push(api);
+  return api;
+};
+
+const syncHighlights = () => {
+  highlights = highlights.filter((item) => item.container.isConnected);
+  highlights.forEach((item) => item.sync());
 };
 
 /* Theme ------------------------------------------------------------------ */
@@ -226,6 +336,7 @@ const initThemeToggle = () => {
 let nodes = [];
 let nodeMarks = [];
 let spyTargets = [];
+let timelines = [];
 let pipelineTop = 0;
 let pipelineHeight = 1;
 let scrollFrame = 0;
@@ -276,6 +387,16 @@ const updateScrollEffects = () => {
     node.classList.toggle("is-reached", reduced || marker >= (nodeMarks[index] ?? Infinity));
   });
 
+  timelines.forEach(({ element, items }) => {
+    const line = window.innerHeight * 0.6;
+    const rect = element.getBoundingClientRect();
+    const progress = reduced ? 1 : clamp((line - rect.top) / rect.height, 0, 1);
+    element.style.setProperty("--tl", progress.toFixed(4));
+    items.forEach((item) => {
+      item.classList.toggle("is-reached", reduced || item.getBoundingClientRect().top <= line);
+    });
+  });
+
   const atBottom = scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
   let current = null;
   spyTargets.forEach((item) => {
@@ -285,6 +406,10 @@ const updateScrollEffects = () => {
   });
   if (atBottom && spyTargets.length) {
     current = spyTargets[spyTargets.length - 1];
+    // Blocks at the very end of the page can never cross the reveal margin.
+    document.querySelectorAll(".reveal:not(.is-visible), .split:not(.is-visible)").forEach((element) => {
+      element.classList.add("is-visible");
+    });
   }
   spyTargets.forEach((item) => {
     if (item === current) {
@@ -293,6 +418,7 @@ const updateScrollEffects = () => {
       item.link.removeAttribute("aria-current");
     }
   });
+  syncHighlights();
 };
 
 const requestScrollUpdate = () => {
@@ -308,6 +434,10 @@ const refreshScrollEffects = () => {
     .filter((link) => link.hash)
     .map((link) => ({ link, target: document.querySelector(link.hash) }))
     .filter((item) => item.target);
+  timelines = Array.from(document.querySelectorAll(".timeline")).map((element) => ({
+    element,
+    items: Array.from(element.querySelectorAll(".timeline__item")),
+  }));
   layoutPipeline();
   updateScrollEffects();
 };
@@ -414,10 +544,8 @@ const loadPartials = async () => {
       try {
         const html = await fetchPartial(name, currentLocale);
         container.innerHTML = html.trim();
-        applyStaggerIndices(container);
-        const animatedTargets = Array.from(container.querySelectorAll("[data-animate]"));
-
-        initAnimatedElements(animatedTargets);
+        initReveals(container);
+        container.querySelectorAll("[data-highlight]").forEach(initHighlight);
       } catch (error) {
         console.error(`Failed to load partial "${name}" for locale "${currentLocale}":`, error);
       }
@@ -486,7 +614,7 @@ currentLocale = getInitialLocale();
 setDocumentLanguage(currentLocale);
 updateUrlLocaleParam(currentLocale);
 
-initAnimatedElements(document);
+initHighlight(document.querySelector(".site-nav"));
 updateYear();
 loadLocaleStrings(currentLocale).catch((error) => {
   console.error("Failed to initialize locale strings:", error);

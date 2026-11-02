@@ -1,7 +1,7 @@
 <section class="hero">
   <div class="hero__content">
     <p class="eyebrow">Data Engineering · Databricks · AI-Augmented Workflows</p>
-    <h1>Resilient data platforms that move research faster.</h1>
+    <h1 data-split>Resilient data platforms that move research faster.</h1>
     <p class="lead">
       I'm Juan José, a data engineer bridging rigorous data engineering with modern AI tooling. I design Python-first
       workflows in Databricks for regulated clinical environments—and apply LLM-powered automation to reduce metadata
@@ -13,15 +13,50 @@
     </div>
   </div>
   <div class="hero__visual" aria-hidden="true">
-    <div class="flow-field">
-      <div class="stream stream--one"></div>
-      <div class="stream stream--two"></div>
-      <div class="stream stream--three"></div>
-      <div class="packet packet--one"></div>
-      <div class="packet packet--two"></div>
-      <div class="packet packet--three"></div>
+    <div class="run">
+      <div class="run__bar">
+        <span class="run__title">Pipeline run</span>
+        <span class="run__status">
+          <span class="run__status-a">Running</span>
+          <span class="run__status-b">Succeeded</span>
+        </span>
+      </div>
+      <ol class="run__steps">
+        <li class="run__step" style="--s: 0">
+          <span class="run__icon">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </span>
+          <span class="run__name">Ingest</span>
+          <span class="run__track"><span class="run__fill"></span></span>
+        </li>
+        <li class="run__step" style="--s: 1">
+          <span class="run__icon">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </span>
+          <span class="run__name">Validate</span>
+          <span class="run__track"><span class="run__fill"></span></span>
+        </li>
+        <li class="run__step" style="--s: 2">
+          <span class="run__icon">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </span>
+          <span class="run__name">Transform</span>
+          <span class="run__track"><span class="run__fill"></span></span>
+        </li>
+        <li class="run__step" style="--s: 3">
+          <span class="run__icon">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </span>
+          <span class="run__name">Publish</span>
+          <span class="run__track"><span class="run__fill"></span></span>
+        </li>
+      </ol>
+      <div class="run__stack">
+        <span class="chip">Python</span>
+        <span class="chip">Databricks</span>
+        <span class="chip">Delta Lake</span>
+      </div>
     </div>
-    <img class="hero__portrait" src="assets/me.jpeg" alt="" width="320" height="320" />
   </div>
   <div class="hero__scroll-hint">
     <span>Want to know more? Scroll down</span>
