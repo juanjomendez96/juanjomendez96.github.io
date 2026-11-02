@@ -1,3 +1,9 @@
+## v1.1.1 (2026-11-02)
+
+### Fix
+
+- add skills-sync target and ignore local agent tooling
+
 ## v1.1.0 (2026-11-02)
 
 ### Feat
