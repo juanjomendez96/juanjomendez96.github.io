@@ -1,3 +1,9 @@
+## v1.1.0 (2026-11-02)
+
+### Feat
+
+- redesign portfolio with light mode and semantic releases (#6)
+
 ## v1.0.0 (2026-11-02)
 
 ### BREAKING CHANGE
